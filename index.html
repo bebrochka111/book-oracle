@@ -112,6 +112,17 @@ a.hero-cta {
     opacity: .75 !important;
   }
 }
+/* Верхняя зелёная полоса над шкафом — как над псом.
+   Перекрываем только первые 18px правой иллюстрации,
+   не обрезая и не сдвигая сам рисунок. */
+.hero::after {
+  background-image:
+    linear-gradient(#193d2b, #193d2b),
+    url('/hero-bookshelf.webp') !important;
+  background-size: 100% 18px, contain !important;
+  background-position: right top, right center !important;
+  background-repeat: no-repeat, no-repeat !important;
+}
 /* Не рисовать декоративные символы на кнопке */
 #randomSentence::before,
 #randomSentence::after {
