@@ -110,3 +110,62 @@ html body,html body *{font-style:normal}
 .admin-gear:focus-visible{outline:3px solid #b88c52;outline-offset:3px}
 .admin-gear svg{display:block;flex:none}
 @media(max-width:650px){.admin-gear{width:42px;height:42px;padding:0}}
+
+/* Мобильный компактный поиск: декоративный заголовок не занимает экран.
+   Книги остаются плитками 2:3 в одной прокручиваемой строке. */
+@media (max-width: 650px) {
+  .reader-section { padding: 12px 12px 36px; scroll-margin-top: 8px; }
+  .reader-section > .section-intro { display: none; }
+  .reader-card { padding: 12px 12px 18px; }
+  .reader-card .card-top { padding-bottom: 7px; font-size: 9px; }
+  .reader-card .card-top-symbol { font-size: 17px; }
+  .reader-card .field { margin-top: 10px; }
+  .reader-card label { margin-bottom: 5px; font-size: 11px; }
+  .reader-card .book-tiles {
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(100px, 31%);
+    grid-template-columns: none; grid-auto-rows: auto; gap: 9px;
+    overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity;
+    padding: 2px 2px 9px; scrollbar-width: thin; align-items: stretch;
+  }
+  .reader-card .book-tile { scroll-snap-align: start; padding: 6px; min-width: 0; }
+  .reader-card .book-tile.is-selected { padding: 5px; }
+  .reader-card .book-tile-cover { aspect-ratio: 2 / 3; }
+  .reader-card .book-tile-title { font-size: 11px; line-height: 1.2; min-height: 0; }
+  .reader-card .book-tile-author { font-size: 10px; }
+  .reader-card .book-tile-details { min-height: 0; }
+  .reader-card .hint { margin-top: 4px; font-size: 10px; }
+  .reader-card .two { gap: 9px; }
+  .reader-card input[type=number] { min-height: 43px; padding: 9px 10px; font-size: 14px; }
+  .reader-card .primary { margin-top: 13px; min-height: 48px; }
+  .reader-footnote { margin-top: 10px; }
+}
+@media (max-width: 380px) {
+  .reader-card .book-tiles { grid-auto-columns: minmax(95px, 38%); }
+}
+
+/* Заголовок внутри формы вместо номера коллекции */
+.reader-card .card-top-heading {display:block;text-align:center;padding-bottom:18px;letter-spacing:normal;}
+.reader-card .card-top-heading h2 {font:700 clamp(24px,3.6vw,34px)/1.18 'Playfair Display',Georgia,serif;color:#294132;margin:0 0 9px;}
+.reader-card .card-top-heading h2 .color-accent {color:#9d7552;}
+.reader-card .card-top-heading p {font:400 13px/1.5 'DM Sans',Arial,sans-serif;color:#777a70;margin:0;}
+@media(max-width:650px){
+ .reader-card .card-top-heading {padding-bottom:10px;}
+ .reader-card .card-top-heading h2 {font-size:clamp(20px,5.5vw,25px);margin-bottom:5px;}
+ .reader-card .card-top-heading p {font-size:11px;line-height:1.35;}
+}
+
+/* Заголовок поиска: та же гарнитура и начертание, что у «У каждой страницы есть что сказать». */
+.reader-card .card-top-heading h2 {font-family:'Playfair Display',Georgia,serif;font-weight:400;letter-spacing:-.03em;}
+.reader-card .card-top-heading h2 .color-accent {font-family:inherit;font-weight:inherit;font-style:normal;}
+
+/* Заголовок непосредственно над выбором книги, без отдельного блока */
+.reader-card .book-selection-field { margin-top: 0; }
+.reader-card .inline-reader-heading { text-align: center; margin: 0 0 22px; }
+.reader-card .inline-reader-heading h2 { font: 400 clamp(24px, 3.6vw, 34px)/1.18 'Playfair Display', Georgia, serif; letter-spacing: -.03em; color: #294132; margin: 0 0 9px; }
+.reader-card .inline-reader-heading h2 .color-accent { color: #9d7552; font: inherit; font-style: normal; }
+.reader-card .inline-reader-heading p { font: 400 13px/1.5 'DM Sans', Arial, sans-serif; color: #777a70; margin: 0; }
+@media (max-width: 650px) {
+  .reader-card .inline-reader-heading { margin-bottom: 13px; }
+  .reader-card .inline-reader-heading h2 { font-size: clamp(20px, 5.5vw, 25px); margin-bottom: 5px; }
+  .reader-card .inline-reader-heading p { font-size: 11px; line-height: 1.35; }
+}
