@@ -106,31 +106,82 @@ function extractPageText(items) {
   }
   return text.replace(/([^\s])-\n(?=\p{L})/gu, '$1').replace(/\s+/g, ' ').trim();
 }
-async function readPdf(file) {
-  const buffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
-  const rows = [];
-  try {
-    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-      message('adminMessage', `Обработка PDF: страница ${pageNumber} из ${pdf.numPages}…`);
-      const page = await pdf.getPage(pageNumber);
-      const content = await page.getTextContent();
-      const sentences = splitSentences(extractPageText(content.items));
-      for (let i = 0; i < sentences.length; i++) rows.push({ page_number: pageNumber, sentence_number: i + 1, content: sentences[i] });
-      page.cleanup();
-    }
-    return { pageCount: pdf.numPages, rows };
-  } finally { await pdf.destroy(); }
+// The PDF is processed locally; do not write anything to Supabase until validation passes.
+const PDF_PAGE_TIMEOUT_MS = 15000;
+const PDF_TOTAL_TIMEOUT_MS = 120000;
+const MAX_PAGES = 600;
+const MAX_SENTENCES = 100000;
+let uploadAbort = null;
+function cancelled(signal) {
+  if (signal.aborted) throw new Error('Обработка отменена. Книга не добавлена.');
 }
+function deadline(promise, milliseconds, label, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) return reject(new Error('Обработка отменена.'));
+    const timer = setTimeout(() => reject(new Error(`${label}: превышено время ожидания. Попробуйте другой PDF или предварительно обработайте файл через OCR.`)), milliseconds);
+    const onAbort = () => reject(new Error('Обработка отменена. Книга не добавлена.'));
+    signal.addEventListener('abort', onAbort, { once: true });
+    Promise.resolve(promise).then(resolve, reject).finally(() => {
+      clearTimeout(timer);
+      signal.removeEventListener('abort', onAbort);
+    });
+  });
+}
+async function readPdf(file, signal) {
+  const started = Date.now();
+  let pdf = null;
+  let loadingTask = null;
+  const rows = [];
+  let pagesWithText = 0;
+  let pagesWithoutText = 0;
+  try {
+    cancelled(signal);
+    const buffer = await deadline(file.arrayBuffer(), 15000, 'Чтение файла', signal);
+    cancelled(signal);
+    loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buffer) });
+    pdf = await deadline(loadingTask.promise, 20000, 'Открытие PDF', signal);
+    if (pdf.numPages > MAX_PAGES) throw new Error(`В книге ${pdf.numPages} страниц. Для этой версии поддерживается не более ${MAX_PAGES}.`);
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      cancelled(signal);
+      if (Date.now() - started > PDF_TOTAL_TIMEOUT_MS) throw new Error('Обработка заняла больше 2 минут. Попробуйте меньший PDF или предварительную OCR-обработку.');
+      message('adminMessage', `Проверка текстового слоя: страница ${pageNumber} из ${pdf.numPages}…`);
+      const page = await deadline(pdf.getPage(pageNumber), PDF_PAGE_TIMEOUT_MS, `Страница ${pageNumber}`, signal);
+      try {
+        const content = await deadline(page.getTextContent(), PDF_PAGE_TIMEOUT_MS, `Чтение текста страницы ${pageNumber}`, signal);
+        const text = extractPageText(content.items);
+        if (text.length >= 10) pagesWithText++; else pagesWithoutText++;
+        const sentences = splitSentences(text);
+        for (let i = 0; i < sentences.length; i++) rows.push({ page_number: pageNumber, sentence_number: i + 1, content: sentences[i] });
+        if (rows.length > MAX_SENTENCES) throw new Error('Слишком много предложений для одной загрузки. Разделите PDF на части.');
+      } finally { page.cleanup(); }
+      // Yield so the browser can update progress and handle Cancel clicks.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+    cancelled(signal);
+    if (!pagesWithText || !rows.length) throw new Error('В PDF не обнаружен текстовый слой. Вероятно, это скан: сначала распознайте текст через OCR и сохраните PDF с текстом. Файл не загружен.');
+    return { pageCount: pdf.numPages, rows, pagesWithoutText };
+  } finally {
+    // Best effort: stop pdf.js work even if an individual page stalls.
+    if (pdf) { try { await Promise.race([pdf.destroy(), new Promise((r) => setTimeout(r, 2000))]); } catch {} }
+    else if (loadingTask) { try { await Promise.race([loadingTask.destroy(), new Promise((r) => setTimeout(r, 2000))]); } catch {} }
+  }
+}
+$('cancelUpload').addEventListener('click', () => {
+  if (uploadAbort) uploadAbort.abort();
+});
 $('uploadForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!client || !isAdmin) return;
   const file = $('file').files[0];
   if (!file || file.size > 20 * 1024 * 1024 || !/\.pdf$/i.test(file.name)) { message('adminMessage', 'Выберите PDF-файл не больше 20 МБ.'); return; }
   const button = $('uploadButton'); button.disabled = true;
+  const controller = new AbortController(); uploadAbort = controller;
+  $('cancelUpload').classList.remove('hidden');
   let path = null, bookId = null;
   try {
-    const { pageCount, rows } = await readPdf(file);
+    const { pageCount, rows, pagesWithoutText } = await readPdf(file, controller.signal);
+    cancelled(controller.signal);
+    uploadAbort = null; $('cancelUpload').classList.add('hidden');
     if (!rows.length) throw new Error('Не удалось извлечь текст. Возможно, это скан без текстового слоя (нужен OCR).');
     path = `${crypto.randomUUID()}.pdf`;
     message('adminMessage', 'Загрузка файла в Supabase Storage…');
@@ -146,7 +197,7 @@ $('uploadForm').addEventListener('submit', async (e) => {
     }
     const published = await client.from('books').update({ status: 'ready' }).eq('id', bookId);
     if (published.error) throw published.error;
-    message('adminMessage', `Книга добавлена: ${pageCount} страниц, ${rows.length} предложений.`);
+    message('adminMessage', `Книга добавлена: ${pageCount} страниц, ${rows.length} предложений.${pagesWithoutText ? ` На ${pagesWithoutText} страницах почти нет извлекаемого текста — проверьте их (возможно, нужен OCR).` : ''}`);
     $('uploadForm').reset();
     await refreshBooks();
   } catch (error) {
@@ -154,7 +205,7 @@ $('uploadForm').addEventListener('submit', async (e) => {
     if (bookId) { const result = await client.from('books').delete().eq('id', bookId); cleanupFailed ||= Boolean(result.error); }
     if (path) { const result = await client.storage.from('books').remove([path]); cleanupFailed ||= Boolean(result.error); }
     message('adminMessage', `Ошибка загрузки: ${error.message}${cleanupFailed ? ' Автоматическая очистка не удалась: проверьте Supabase вручную.' : ''}`);
-  } finally { button.disabled = false; }
+  } finally { button.disabled = false; uploadAbort = null; $('cancelUpload').classList.add('hidden'); }
 });
 function renderAdminBooks() {
   $('adminBooks').replaceChildren();
