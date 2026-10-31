@@ -92,7 +92,22 @@ function renderBookTiles(readyBooks) {
         button.setAttribute('aria-pressed', String(active));
       }
       message('readerMessage', '');
-      updateMeta();
+updateMeta();
+
+// Плавно прокручиваем к выбору страницы и предложения
+requestAnimationFrame(() => {
+  const pageField = document.getElementById('page');
+  if (!pageField) return;
+
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  pageField.scrollIntoView({
+    behavior: reducedMotion ? 'instant' : 'smooth',
+    block: 'center'
+  });
+});
     });
     container.append(tile);
   }
