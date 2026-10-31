@@ -169,3 +169,6 @@ html body,html body *{font-style:normal}
   .reader-card .inline-reader-heading h2 { font-size: clamp(20px, 5.5vw, 25px); margin-bottom: 5px; }
   .reader-card .inline-reader-heading p { font-size: 11px; line-height: 1.35; }
 }
+
+/* Leave a little space above the quote when scrolling to it. */
+#result { scroll-margin-top: 1.25rem; }
