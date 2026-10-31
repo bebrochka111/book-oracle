@@ -120,6 +120,14 @@ $('searchForm').addEventListener('submit', async (e) => {
   $('quote').textContent = currentQuote;
   $('citation').textContent = `${book.title} · страница ${page} · предложение ${number}`;
   $('result').classList.remove('hidden');
+  // Wait until the result is laid out, then move the viewport to the quote.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const result = $('result');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      result.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
+    });
+  });
 });
 $('copy').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(currentQuote); $('copy').textContent = 'Скопировано ✓'; }
