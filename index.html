@@ -76,18 +76,41 @@ a.hero-cta {
   font-weight: 700 !important;
 }
 
-/* Иллюстрации героя без зелёного затемнения */
-.hero::before {
-  background-image: url('/hero-dog.webp') !important;
+/* Полные иллюстрации по краям: одинаковые области слева и справа.
+   contain сохраняет весь рисунок без обрезки, в отличие от cover. */
+.hero::before,
+.hero::after {
+  top: 0 !important;
+  bottom: 0 !important;
+  width: min(36vw, 690px) !important;
+  height: 100% !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
   opacity: 1 !important;
 }
+.hero::before {
+  left: 0 !important;
+  right: auto !important;
+  background-image: url('/hero-dog.webp') !important;
+  background-position: left center !important;
+}
 .hero::after {
+  right: 0 !important;
+  left: auto !important;
   background-image: url('/hero-bookshelf.webp') !important;
-  opacity: 1 !important;
+  background-position: right center !important;
 }
 .hero .hero-glow {
   background: none !important;
   opacity: 0 !important;
+}
+@media (max-width: 650px) {
+  .hero::before,
+  .hero::after {
+    width: 40vw !important;
+    background-size: contain !important;
+    opacity: .75 !important;
+  }
 }
 /* Не рисовать декоративные символы на кнопке */
 #randomSentence::before,
