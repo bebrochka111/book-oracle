@@ -38,3 +38,51 @@
 .cover-editor input{max-width:100%}.cover-editor .secondary{margin-top:0}.cover-preview{width:90px;height:130px;object-fit:cover;border-radius:3px}
 .cover-status{font-size:12px;color:#a34d39;margin:0}
 @media(max-width:650px){.bookrow{align-items:flex-start;flex-direction:column}.bookrow-actions{justify-content:flex-start}}
+
+
+/* Обложки 2:3: одинаковая высота рядов и изображения без обрезки. */
+.book-tiles {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+.book-tile {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  align-items: stretch;
+}
+.book-tile-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+.book-tile-cover.has-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e6e0d5;
+}
+.book-tile-cover-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.book-tile-details { flex: 1 1 auto; }
+.book-tile-title { min-height: 2.6em; }
+.book-tile-check { z-index: 1; }
+@media (max-width: 650px) {
+  .book-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .book-tile-cover { width: 100%; height: auto; aspect-ratio: 2 / 3; }
+}
+@media (max-width: 360px) {
+  .book-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .book-tile { flex-direction: column; align-items: stretch; }
+  .book-tile-cover { width: 100%; height: auto; aspect-ratio: 2 / 3; flex-shrink: 0; }
+  .book-tile-details { min-height: 0; }
+}
