@@ -75,6 +75,25 @@ a.hero-cta {
 .book-tile-pages {
   font-weight: 700 !important;
 }
+
+/* Иллюстрации героя без зелёного затемнения */
+.hero::before {
+  background-image: url('/hero-dog.webp') !important;
+  opacity: 1 !important;
+}
+.hero::after {
+  background-image: url('/hero-bookshelf.webp') !important;
+  opacity: 1 !important;
+}
+.hero .hero-glow {
+  background: none !important;
+  opacity: 0 !important;
+}
+/* Не рисовать декоративные символы на кнопке */
+#randomSentence::before,
+#randomSentence::after {
+  content: none !important;
+}
 </style></head>
 <body>
 <header class="site-header"><div class="header-inner"><a class="brand" href="#top" aria-label="Книжный оракул — главная"><img class="brand-logo" src="/book-oracle-logo.webp" alt="Собака-колдун с магическим шаром. Книжный Оракул" width="285" height="98"></a><nav class="header-nav" aria-label="Настройки"><button id="adminToggle" class="admin-link admin-gear" type="button" aria-label="Открыть панель администратора" title="Администратор" aria-controls="admin" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 13.5 4.6a8 8 0 0 1 2.1.9l2.5-.5 2 3.4-1.7 1.9a8 8 0 0 1 0 2.4l1.7 1.9-2 3.4-2.5-.5a8 8 0 0 1-2.1.9L12 21.5l-1.5-2.1a8 8 0 0 1-2.1-.9l-2.5.5-2-3.4 1.7-1.9a8 8 0 0 1 0-2.4L3.9 9.4l2-3.4 2.5.5a8 8 0 0 1 2.1-.9Z"/><circle cx="12" cy="12" r="3"/></svg></button></nav></div></header>
