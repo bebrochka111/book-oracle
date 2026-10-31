@@ -232,3 +232,31 @@ html body,html body *{font-style:normal}
     grid-auto-columns: auto;
   }
 }
+/* Кнопка случайного предложения */
+.random-sentence-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 22px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.random-sentence-btn:hover {
+  transform: translateY(-2px);
+}
+
+.random-sentence-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+@media (max-width: 650px) {
+  .random-sentence-btn {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
