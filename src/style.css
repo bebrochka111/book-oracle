@@ -172,3 +172,30 @@ html body,html body *{font-style:normal}
 
 /* Leave a little space above the quote when scrolling to it. */
 #result { scroll-margin-top: 1.25rem; }
+
+
+/* Иллюстрации первого экрана: самостоятельные фоны без текста внутри изображений. */
+.hero{isolation:isolate;background:#193d2b;min-height:570px}
+.hero::before,.hero::after{content:"";position:absolute;top:0;bottom:0;opacity:1;pointer-events:none;z-index:0;background-repeat:no-repeat;background-size:cover;}
+.hero::before{left:0;width:min(33vw,520px);background-image:linear-gradient(to right,transparent 72%,#193d2b 100%),url('/hero-dog.webp');background-position:center bottom;}
+.hero::after{right:0;width:min(31vw,500px);background-image:linear-gradient(to left,transparent 75%,#193d2b 100%),url('/hero-bookshelf.webp');background-position:center bottom;}
+.hero-glow{z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#193d2b 15%,rgba(25,61,43,.86) 34%,transparent 67%);opacity:1}
+.hero-content{z-index:2;max-width:min(790px,64vw)}
+@media(max-width:850px){
+ .hero{min-height:540px;padding:70px 20px 78px}
+ .hero::before{width:35%;background-position:60% bottom;opacity:.78}
+ .hero::after{width:32%;background-position:48% bottom;opacity:.75}
+ .hero-glow{background:radial-gradient(ellipse at 50% 45%,#193d2b 22%,rgba(25,61,43,.94) 50%,transparent 78%)}
+ .hero-content{max-width:100%;width:100%}
+ .hero h1{font-size:clamp(40px,7vw,66px);line-height:1.16}
+ .hero p{max-width:460px}
+}
+@media(max-width:520px){
+ .hero{min-height:510px;padding:64px 16px 58px}
+ .hero::before{width:32%;background-size:auto 78%;background-position:left bottom;opacity:.8}
+ .hero::after{width:29%;background-size:auto 78%;background-position:right bottom;opacity:.75}
+ .hero-glow{background:linear-gradient(90deg,rgba(25,61,43,.25),#193d2b 27%,#193d2b 73%,rgba(25,61,43,.25))}
+ .hero h1{font-size:clamp(36px,9.2vw,49px);letter-spacing:-1.2px}
+ .hero p{font-size:13px;max-width:290px;line-height:1.65}
+ .hero-cta{position:relative;z-index:3}
+}
