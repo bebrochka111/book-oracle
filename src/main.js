@@ -182,8 +182,8 @@ function extractPageText(items) {
 }
 // The PDF is processed locally; do not write anything to Supabase until validation passes.
 const PDF_PAGE_TIMEOUT_MS = 15000;
-const PDF_TOTAL_TIMEOUT_MS = 120000;
-const MAX_PAGES = 600;
+const PDF_TOTAL_TIMEOUT_MS = 300000;
+const MAX_PAGES = 1200;
 const MAX_SENTENCES = 100000;
 let uploadAbort = null;
 function cancelled(signal) {
@@ -217,7 +217,7 @@ async function readPdf(file, signal) {
     if (pdf.numPages > MAX_PAGES) throw new Error(`В книге ${pdf.numPages} страниц. Для этой версии поддерживается не более ${MAX_PAGES}.`);
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
       cancelled(signal);
-      if (Date.now() - started > PDF_TOTAL_TIMEOUT_MS) throw new Error('Обработка заняла больше 2 минут. Попробуйте меньший PDF или предварительную OCR-обработку.');
+     if (Date.now() - started > PDF_TOTAL_TIMEOUT_MS) throw new Error('Обработка заняла больше 5 минут. Попробуйте меньший PDF или предварительную OCR-обработку.');
       message('adminMessage', `Проверка текстового слоя: страница ${pageNumber} из ${pdf.numPages}…`);
       const page = await deadline(pdf.getPage(pageNumber), PDF_PAGE_TIMEOUT_MS, `Страница ${pageNumber}`, signal);
       try {
