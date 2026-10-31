@@ -144,6 +144,95 @@ $('searchForm').addEventListener('submit', async (e) => {
     });
   });
 });
+$('randomSentence').addEventListener('click', async () => {
+  const button = $('randomSentence');
+  if (button.disabled) return;
+
+  button.disabled = true;
+  button.textContent = '✦ Ищем предложение…';
+  message('readerMessage', '');
+
+  try {
+    if (!client) {
+      throw new Error('Нет подключения к библиотеке.');
+    }
+
+    const readyBooks = books.filter(
+      (book) => book.status === 'ready'
+    );
+
+    if (!readyBooks.length) {
+      throw new Error('В библиотеке пока нет доступных книг.');
+    }
+
+    const ids = readyBooks.map((book) => book.id);
+
+    const { count, error: countError } = await client
+      .from('sentences')
+      .select('*', { count: 'exact', head: true })
+      .in('book_id', ids);
+
+    if (countError) throw countError;
+
+    if (!count) {
+      throw new Error('В библиотеке пока нет предложений.');
+    }
+
+    const randomOffset = Math.floor(Math.random() * count);
+
+    const { data, error } = await client
+      .from('sentences')
+      .select('book_id,page_number,sentence_number,content')
+      .in('book_id', ids)
+      .order('book_id')
+      .order('page_number')
+      .order('sentence_number')
+      .range(randomOffset, randomOffset);
+
+    if (error) throw error;
+    if (!data?.length) {
+      throw new Error('Не удалось выбрать предложение.');
+    }
+
+    const sentence = data[0];
+    const book = readyBooks.find(
+      (item) => item.id === sentence.book_id
+    );
+
+    currentQuote = sentence.content;
+    $('quote').textContent = currentQuote;
+    $('citation').textContent =
+      `${book?.title || 'Книга'} · ` +
+      `страница ${sentence.page_number} · ` +
+      `предложение ${sentence.sentence_number}`;
+
+    $('result').classList.remove('hidden');
+    $('copy').textContent = 'Копировать ↗';
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const reducedMotion = window.matchMedia(
+          '(prefers-reduced-motion: reduce)'
+        ).matches;
+
+        $('result').scrollIntoView({
+          behavior: reducedMotion ? 'instant' : 'smooth',
+          block: 'center'
+        });
+      });
+    });
+
+  } catch (error) {
+    message('readerMessage', `Ошибка: ${error.message}`);
+    $('readerMessage').scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  } finally {
+    button.disabled = false;
+    button.textContent = '✦ Случайное предложение';
+  }
+});
 $('copy').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(currentQuote); $('copy').textContent = 'Скопировано ✓'; }
   catch { message('readerMessage', 'Не удалось скопировать автоматически.'); }
