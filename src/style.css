@@ -3,3 +3,38 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 .upload-note{font-size:12px;line-height:1.65;color:#777a70;margin:12px 0 0}.cancel-upload{display:block;width:100%;margin-top:12px;padding:12px;border:1px solid #b98f66;background:transparent;color:#8d543b;font-weight:700}.cancel-upload:hover{background:#f5ece3}
+
+/* Книжная витрина: выбор книги плитками вместо выпадающего списка */
+.book-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}
+.book-tiles-status{grid-column:1/-1;margin:0;padding:22px 16px;background:#f9f7f1;border:1px dashed #d9d2c3;color:#777a70;text-align:center;font-size:13px;line-height:1.6}
+.book-tile{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:12px;min-width:0;min-height:240px;padding:13px;background:#fbf9f3;border:1px solid #e2dccc;border-radius:8px;text-align:left;color:#27392e;transition:border-color .18s,box-shadow .18s,transform .18s;cursor:pointer}
+.book-tile:hover{border-color:#b78e60;box-shadow:0 8px 24px #27392e16;transform:translateY(-2px)}
+.book-tile:focus-visible{outline:3px solid #b78e60;outline-offset:3px}
+.book-tile.is-selected{border:2px solid #315b42;padding:12px;background:#f2f6ed;box-shadow:0 5px 18px #29413218}
+.book-tile-cover{height:112px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:10px;background:linear-gradient(140deg,#274d3a,#44614b);border-radius:4px;color:#d9bd90;box-shadow:inset 5px 0 #152d2340}
+.book-tile:nth-child(4n+2) .book-tile-cover{background:linear-gradient(140deg,#795445,#a67a62)}
+.book-tile:nth-child(4n+3) .book-tile-cover{background:linear-gradient(140deg,#4c5268,#737e91)}
+.book-tile:nth-child(4n+4) .book-tile-cover{background:linear-gradient(140deg,#7b6941,#a69264)}
+.book-tile-ornament{font:18px Georgia,serif;align-self:flex-start}
+.book-tile-icon{font:56px/1 Georgia,serif;letter-spacing:-8px;transform:rotate(-4deg);margin-bottom:8px}
+.book-tile-details{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.book-tile-title{font:500 16px/1.3 'Playfair Display',Georgia,serif;overflow-wrap:anywhere}
+.book-tile-author{font-size:11px;line-height:1.4;color:#777a70;overflow-wrap:anywhere}
+.book-tile-pages{margin-top:auto;font-size:10px;color:#9b866a}
+.book-tile-check{position:absolute;top:8px;right:8px;width:24px;height:24px;display:grid;place-items:center;background:#315b42;color:white;border-radius:50%;font-size:13px;opacity:0}
+.book-tile.is-selected .book-tile-check{opacity:1}
+@media(max-width:650px){.book-tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.book-tile{min-height:215px;padding:10px}.book-tile.is-selected{padding:9px}.book-tile-cover{height:94px}.book-tile-title{font-size:15px}}
+@media(max-width:360px){.book-tiles{grid-template-columns:1fr}.book-tile{min-height:0;flex-direction:row;align-items:center}.book-tile-cover{width:76px;height:90px;flex-shrink:0}.book-tile-icon{font-size:35px}.book-tile-details{min-height:85px}}
+@media(prefers-reduced-motion:reduce){.book-tile{transition:none}.book-tile:hover{transform:none}}
+
+/* Обложки книг и редактирование изображений администратором */
+.book-tile-cover.has-image{padding:0;overflow:hidden;box-shadow:none;background:#e6e0d5}
+.book-tile-cover-image{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.admin-book-item{border-bottom:1px solid #e8e2d7}
+.admin-book-item .bookrow{border-bottom:0}
+.bookrow-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.edit-cover{border:1px solid #a7b8a6;background:#f2f6ed;color:#2c4837;padding:10px 12px;font-size:12px}
+.cover-editor{padding:12px 14px 20px;background:#f9f7f1;display:flex;align-items:flex-start;flex-direction:column;gap:10px}
+.cover-editor input{max-width:100%}.cover-editor .secondary{margin-top:0}.cover-preview{width:90px;height:130px;object-fit:cover;border-radius:3px}
+.cover-status{font-size:12px;color:#a34d39;margin:0}
+@media(max-width:650px){.bookrow{align-items:flex-start;flex-direction:column}.bookrow-actions{justify-content:flex-start}}
