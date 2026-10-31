@@ -125,7 +125,7 @@ $('copy').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(currentQuote); $('copy').textContent = 'Скопировано ✓'; }
   catch { message('readerMessage', 'Не удалось скопировать автоматически.'); }
 });
-$('adminToggle').addEventListener('click', () => { const panel = $('admin'); panel.classList.toggle('hidden'); if (!panel.classList.contains('hidden')) panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+$('adminToggle').addEventListener('click', () => { const panel = $('admin'); panel.classList.toggle('hidden'); $('adminToggle').setAttribute('aria-expanded', String(!panel.classList.contains('hidden'))); if (!panel.classList.contains('hidden')) panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 
 async function updateAuth() {
   if (!client) return;
