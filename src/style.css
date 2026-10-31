@@ -86,3 +86,27 @@
   .book-tile-cover { width: 100%; height: auto; aspect-ratio: 2 / 3; flex-shrink: 0; }
   .book-tile-details { min-height: 0; }
 }
+
+/* Обновлённый логотип и единая прямая типографика */
+.brand{display:inline-flex;align-items:center;flex:0 1 auto;min-width:0;line-height:1}
+.brand-logo{display:block;width:clamp(175px,22vw,285px);height:auto;max-height:78px;object-fit:contain;object-position:left center}
+.header-inner{min-height:100px;height:auto;padding-top:10px;padding-bottom:10px;gap:14px}
+.color-accent{color:#d6b88d;font-style:normal;font-weight:inherit}
+.section-intro .color-accent{color:#9d7552}
+/* Убираем курсив со всего сайта, не убирая цветовое выделение. */
+html body,html body *{font-style:normal}
+@media(max-width:650px){
+ .header-inner{min-height:76px;height:auto;padding-top:8px;padding-bottom:8px}
+ .brand-logo{width:clamp(155px,43vw,205px);max-height:64px}
+ .header-nav{flex-shrink:0}
+ .admin-link{padding:9px 8px;font-size:10px}
+}
+@media(max-width:390px){.brand-logo{width:145px}.header-inner{padding-left:12px;padding-right:12px}}
+
+/* Минималистичная кнопка администратора: шестерёнка вместо надписи */
+.header-nav{gap:0}
+.admin-gear{width:46px;height:46px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid #c5ad85;border-radius:50%;background:transparent;color:#31513c;transition:background .2s,border-color .2s,transform .2s}
+.admin-gear:hover{background:#eee8db;border-color:#a47c47;transform:rotate(15deg)}
+.admin-gear:focus-visible{outline:3px solid #b88c52;outline-offset:3px}
+.admin-gear svg{display:block;flex:none}
+@media(max-width:650px){.admin-gear{width:42px;height:42px;padding:0}}
