@@ -41,10 +41,38 @@
     min-height: 50px;
   }
 }
+
+/* Единая типографика кнопок в стиле главного заголовка */
+button:not(.admin-gear),
+a.hero-cta {
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  text-transform: uppercase;
+  letter-spacing: .025em;
+}
+
+/* Кнопка поиска: текст строго по центру, без стрелки */
+#searchForm button.primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+#searchForm button.primary > span {
+  text-align: center;
+}
+
+/* Главные кнопки: центрирование и одинаковая ширина */
+.hero-content > a.hero-cta,
+.hero-content > button.random-sentence-btn {
+  justify-content: center;
+  text-align: center;
+}
 </style></head>
 <body>
 <header class="site-header"><div class="header-inner"><a class="brand" href="#top" aria-label="Книжный оракул — главная"><img class="brand-logo" src="/book-oracle-logo.webp" alt="Собака-колдун с магическим шаром. Книжный Оракул" width="285" height="98"></a><nav class="header-nav" aria-label="Настройки"><button id="adminToggle" class="admin-link admin-gear" type="button" aria-label="Открыть панель администратора" title="Администратор" aria-controls="admin" aria-expanded="false"><svg aria-hidden="true" viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5 13.5 4.6a8 8 0 0 1 2.1.9l2.5-.5 2 3.4-1.7 1.9a8 8 0 0 1 0 2.4l1.7 1.9-2 3.4-2.5-.5a8 8 0 0 1-2.1.9L12 21.5l-1.5-2.1a8 8 0 0 1-2.1-.9l-2.5.5-2-3.4 1.7-1.9a8 8 0 0 1 0-2.4L3.9 9.4l2-3.4 2.5.5a8 8 0 0 1 2.1-.9Z"/><circle cx="12" cy="12" r="3"/></svg></button></nav></div></header>
-<main id="top"><section class="hero"><div class="hero-glow" aria-hidden="true"></div><div class="hero-content"><div class="eyebrow"><span class="eyebrow-line"></span> МАЛЕНЬКИЕ ОТКРЫТИЯ В БОЛЬШИХ КНИГАХ <span class="eyebrow-line"></span></div><h1>У каждой страницы<br><span class="color-accent">есть что сказать.</span></h1><p>Иногда одно предложение может стать началом целой истории. Выберите книгу, откройте страницу и найдите свою строку.</p><a class="hero-cta" href="#reader">Выбрать книгу <span>↗</span></a><button
+<main id="top"><section class="hero"><div class="hero-glow" aria-hidden="true"></div><div class="hero-content"><div class="eyebrow"><span class="eyebrow-line"></span> МАЛЕНЬКИЕ ОТКРЫТИЯ В БОЛЬШИХ КНИГАХ <span class="eyebrow-line"></span></div><h1>У каждой страницы<br><span class="color-accent">есть что сказать.</span></h1><p>Иногда одно предложение может стать началом целой истории. Выберите книгу, откройте страницу и найдите свою строку.</p><a class="hero-cta" href="#reader">Выбрать книгу</a><button
   id="randomSentence"
   class="hero-cta random-sentence-btn"
   type="button"
@@ -52,7 +80,7 @@
   Случайное предложение
 </button>
 </div></section>
-<section class="reader-section" id="reader"><div class="reader-card"><form id="searchForm"><div class="field book-selection-field"><div class="inline-reader-heading"><h2>Найдите <span class="color-accent">своё предложение</span></h2><p>Три простых шага - и книга поделится с вами одной строкой.</p></div><label for="book">Выберите книгу</label><input id="book" type="hidden" value=""><div id="bookTiles" class="book-tiles" role="group" aria-label="Выберите книгу"><p class="book-tiles-status">Загрузка библиотеки…</p></div><div id="bookMeta" class="hint" aria-live="polite"></div></div><div class="two"><div class="field"><label for="page">Страница произведения</label><input id="page" type="number" min="1" step="1" required placeholder="Например, 42" inputmode="numeric"></div><div class="field"><label for="number">Номер предложения</label><input id="number" type="number" min="1" step="1" required placeholder="Например, 3" inputmode="numeric"></div></div><button class="primary" type="submit"><span>Найти предложение</span><span class="button-arrow">↗</span></button></form><div id="result" class="result hidden" aria-live="polite"><div class="result-label">✦ ВАША НАЙДЕННАЯ СТРОКА</div><blockquote id="quote"></blockquote><div class="resultfoot"><span id="citation"></span><button id="copy" class="textbtn" type="button">Копировать ↗</button></div></div><div id="readerMessage" class="message" role="status"></div></div><div class="reader-footnote">✳ Нумерация начинается с первой физической страницы PDF, включая обложку.</div></section>
+<section class="reader-section" id="reader"><div class="reader-card"><form id="searchForm"><div class="field book-selection-field"><div class="inline-reader-heading"><h2>Найдите <span class="color-accent">своё предложение</span></h2><p>Три простых шага - и книга поделится с вами одной строкой.</p></div><label for="book">Выберите книгу</label><input id="book" type="hidden" value=""><div id="bookTiles" class="book-tiles" role="group" aria-label="Выберите книгу"><p class="book-tiles-status">Загрузка библиотеки…</p></div><div id="bookMeta" class="hint" aria-live="polite"></div></div><div class="two"><div class="field"><label for="page">Страница произведения</label><input id="page" type="number" min="1" step="1" required placeholder="Например, 42" inputmode="numeric"></div><div class="field"><label for="number">Номер предложения</label><input id="number" type="number" min="1" step="1" required placeholder="Например, 3" inputmode="numeric"></div></div><button class="primary" type="submit"><span>Показать предложение</span></button></form><div id="result" class="result hidden" aria-live="polite"><div class="result-label">✦ ВАША НАЙДЕННАЯ СТРОКА</div><blockquote id="quote"></blockquote><div class="resultfoot"><span id="citation"></span><button id="copy" class="textbtn" type="button">Копировать ↗</button></div></div><div id="readerMessage" class="message" role="status"></div></div><div class="reader-footnote">✳ Нумерация начинается с первой физической страницы PDF, включая обложку.</div></section>
 
 <section class="panel admin hidden" id="admin"><div class="section-intro admin-intro"><div class="kicker">ЛИЧНЫЙ КАБИНЕТ</div><h2>Управление <span class="color-accent">библиотекой</span></h2><p>Добавляйте новые книги и управляйте коллекцией.</p></div><div class="admin-card"><p class="muted">Вход администратора через Supabase Auth. Читателям регистрация не нужна.</p><div id="loginArea"><form id="loginForm"><label for="email">Email администратора</label><input id="email" type="email" required autocomplete="username" placeholder="name@example.com"><label for="password">Пароль</label><input id="password" type="password" required autocomplete="current-password" placeholder="Введите пароль"><button class="secondary" type="submit">Войти ↗</button></form></div><div id="adminArea" class="hidden"><button id="logout" type="button" class="textbtn">Выйти ↗</button><form id="uploadForm"><label for="title">Название книги</label><input id="title" maxlength="200" required placeholder="Название книги"><label for="author">Автор</label><input id="author" maxlength="200" placeholder="Имя автора"><label for="newCover">Изображение плитки (необязательно, JPG/PNG/WebP до 3 МБ)</label><input id="newCover" type="file" accept="image/jpeg,image/png,image/webp"><label for="file">PDF-файл (до 20 МБ)</label><input id="file" type="file" accept=".pdf,application/pdf" required><p class="upload-note">PDF обрабатывается в браузере до загрузки в Supabase. Сканам без текстового слоя нужен OCR. Ограничение: 20 МБ, 1200 страниц, 5 минут на обработку.</p><button class="primary" type="submit" id="uploadButton"><span>Загрузить и обработать книгу</span><span class="button-arrow">↑</span></button><button class="cancel-upload hidden" type="button" id="cancelUpload">Отменить обработку</button></form><h3>Загруженные книги</h3><div id="adminBooks"></div></div><div id="adminMessage" class="message" role="status"></div></div></section>
 <footer><div class="footer-inner"><div class="footer-brand">КНИЖНЫЙ ОРАКУЛ</div><p>Место, где книги говорят с вами.</p><span>СОЗДАНО С ЛЮБОВЬЮ К СЛОВАМ · © 2026</span></div></footer></main><script type="module" src="/src/main.js"></script></body></html>
