@@ -112,17 +112,19 @@ a.hero-cta {
     opacity: .75 !important;
   }
 }
-/* Верхняя зелёная полоса над шкафом — как над псом.
-   Перекрываем только первые 18px правой иллюстрации,
-   не обрезая и не сдвигая сам рисунок. */
+/* Симметричные полосы сверху и снизу обеих иллюстраций. */
+.hero::before,
 .hero::after {
   background-image:
     linear-gradient(#193d2b, #193d2b),
-    url('/hero-bookshelf.webp') !important;
-  background-size: 100% 18px, contain !important;
-  background-position: right top, right center !important;
-  background-repeat: no-repeat, no-repeat !important;
+    linear-gradient(#193d2b, #193d2b),
+    var(--hero-illustration) !important;
+  background-size: 100% 18px, 100% 18px, contain !important;
+  background-position: center top, center bottom, center center !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
 }
+.hero::before { --hero-illustration: url('/hero-dog.webp'); }
+.hero::after { --hero-illustration: url('/hero-bookshelf.webp'); }
 /* Не рисовать декоративные символы на кнопке */
 #randomSentence::before,
 #randomSentence::after {
